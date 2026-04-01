@@ -93,10 +93,29 @@ fi
 
 IP=$(echo "$GEO_JSON" | grep -o '"ip"\s*:\s*"[^"]*"' | head -1 | cut -d'"' -f4)
 
+# Emoji: from country code
+if [ -z "$EMOJI" ]; then
+  CC=$(echo "$GEO_JSON" | grep -o '"country"\s*:\s*"[^"]*"' | head -1 | cut -d'"' -f4 | tr '[:lower:]' '[:upper:]')
+  if [ -n "$CC" ] && [ ${#CC} -eq 2 ]; then
+    # Convert country code to flag emoji (regional indicator symbols: A=0x1F1E6)
+    EMOJI=$(node -e "
+      const cc='${CC}';
+      if(/^[A-Z]{2}$/.test(cc)){
+        const a=cc.charCodeAt(0)-65+0x1F1E6;
+        const b=cc.charCodeAt(1)-65+0x1F1E6;
+        process.stdout.write(String.fromCodePoint(a)+String.fromCodePoint(b));
+      } else { process.stdout.write('🌐'); }
+    " 2>/dev/null || echo "🌐")
+  else
+    EMOJI="🌐"
+  fi
+fi
+
 echo ""
 echo "  Host ID : $HOST_ID"
 echo "  Label   : $LABEL"
 echo "  Region  : $REGION"
+echo "  Emoji   : $EMOJI"
 echo "  IP      : ${IP:-unknown}"
 echo "  Server  : $SERVER"
 echo ""
@@ -164,7 +183,7 @@ Wants=network-online.target
 [Service]
 Type=simple
 WorkingDirectory=/opt/nt-agent
-ExecStart=/usr/bin/node /opt/nt-agent/nt-agent.js --server ${SERVER} --id ${HOST_ID} --key ${KEY}
+ExecStart=/usr/bin/node /opt/nt-agent/nt-agent.js --server ${SERVER} --id ${HOST_ID} --label ${LABEL} --region ${REGION} --emoji ${EMOJI} --key ${KEY}
 Restart=always
 RestartSec=5
 
