@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # NextTrace Agent — 一键安装
-# curl -fsSL https://raw.githubusercontent.com/pumpkin-book/nexttrace-web/main/install.sh | bash -s -- --host <id>
+# curl -fsSL https://raw.githubusercontent.com/reallinzc/nexttrace-web/main/install.sh | bash -s -- --host <id>
 #
 # Options:
 #   --host <id>       Host ID (default: auto from hostname)
@@ -152,7 +152,7 @@ cd /opt/nt-agent
 
 # Download agent script
 curl -fsSL -o /opt/nt-agent/nt-agent.js \
-  "https://raw.githubusercontent.com/pumpkin-book/nexttrace-web/main/nt-agent.js"
+  "https://raw.githubusercontent.com/reallinzc/nexttrace-web/main/nt-agent.js"
 
 # Systemd service
 cat > /etc/systemd/system/nt-agent.service <<SVC
@@ -192,4 +192,4 @@ echo ""
 echo "  管理命令:"
 echo "    状态: systemctl status nt-agent"
 echo "    日志: journalctl -u nt-agent -f"
-echo "    卸载: curl -fsSL https://raw.githubusercontent.com/pumpkin-book/nexttrace-web/main/install.sh | bash -s -- --uninstall"
+echo "    卸载: curl -fsSL https://raw.githubusercontent.com/reallinzc/nexttrace-web/main/install.sh | bash -s -- --uninstall"
